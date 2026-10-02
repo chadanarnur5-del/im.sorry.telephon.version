@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport обязателен для мобильных устройств -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ты простишь меня?</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Убирает синее выделение при тапе на мобильных */
+        }
+
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden; /* Предотвращает прокрутку, когда кнопка убегает */
+        }
+
+        .card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            width: 100%;
+            max-width: 360px;
+            position: relative;
+        }
+
+        .img-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 15px auto;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 25px;
+            line-height: 1.3;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            min-height: 60px;
+            position: relative;
+        }
+
+        button {
+            padding: 12px 28px;
+            font-size: 17px;
+            font-weight: 600;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        #yesBtn {
+            background-color: #3b82f6;
+            color: white;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        #noBtn {
+            background-color: #f1f5f9;
+            color: #475569;
+            transition: all 0.15s ease-out;
+        }
+
+        .letter-screen {
+            display: none;
+        }
+
+        .letter-screen p {
+            color: #475569;
+            line-height: 1.6;
+            margin-top: 15px;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .restart-btn {
+            margin-top: 20px;
+            background-color: #f1f5f9;
+            color: #64748b;
+            font-size: 14px;
+            padding: 10px 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="card">
+        <div id="questionScreen">
+            <div class="img-container">
+                <img id="mainImage" src="sad.gif" alt="Грустный кот">
+            </div>
+            <h1>Ты простишь меня? 🥺</h1>
+            <div class="buttons-container" id="btnContainer">
+                <button id="yesBtn">Да</button>
+                <button id="noBtn">Нет</button>
+            </div>
+        </div>
+
+        <div id="letterScreen" class="letter-screen">
+            <div class="img-container">
+                <img src="happy.gif" alt="Счастливый кот">
+            </div>
+            <h1>Ура! Я знал(а), что ты меня простишь! ❤️</h1>
+            <p>Я правда очень сожалею о том, что произошло. Ты очень важен(на) для меня. Обещаю делать всё, чтобы больше тебя не расстраивать!</p>
+            <button class="restart-btn" onclick="location.reload()">Заново</button>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const questionScreen = document.getElementById('questionScreen');
+        const letterScreen = document.getElementById('letterScreen');
+        const card = document.getElementById('card');
+
+        // Функция переноса кнопки "Нет" в случайную позицию
+        function moveNoButton(e) {
+            if (e) e.preventDefault(); // Предотвращает нажатие на мобильном
+
+            const cardRect = card.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // Безопасные отступы внутри карточки
+            const maxX = cardRect.width - btnRect.width - 20;
+            const maxY = cardRect.height - btnRect.height - 20;
+
+            const randomX = Math.floor(Math.random() * maxX) + 10;
+            const randomY = Math.floor(Math.random() * maxY) + 10;
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Поддержка ПК (мышь) и Смартфонов (касания)
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('touchstart', moveNoButton, { passive: false });
+        noBtn.addEventListener('click', moveNoButton);
+
+        // Нажатие на "Да"
+        yesBtn.addEventListener('click', () => {
+            questionScreen.style.display = 'none';
+            letterScreen.style.display = 'block';
+
+            confetti({
+                particleCount: 80,
+                spread: 60,
+                origin: { y: 0.6 }
+            });
+        });
+    </script>
+</body>
+</html>
